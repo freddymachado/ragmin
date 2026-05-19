@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAGMIN Chatbot - Asistente Inteligente</title>
+    <meta name="description" content="Interfaz de chat moderna para el servicio RAG local de RAGMIN.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i data-lucide="layers"></i>
+                    <span>RAGMIN</span>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <div class="nav-item active">
+                    <i data-lucide="message-square"></i>
+                    <span>Chat Principal</span>
+                </div>
+                <div class="nav-item">
+                    <i data-lucide="settings"></i>
+                    <span>Configuración</span>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="pulse"></span>
+                    <span id="api-status">Conectando...</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="chat-main">
+            <header class="chat-header">
+                <div class="header-info">
+                    <h1>Asistente RAG</h1>
+                    <p>Basado en tus documentos PDF</p>
+                </div>
+                <div class="header-actions">
+                    <button id="clear-chat" title="Limpiar chat">
+                        <i data-lucide="trash-2"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="message assistant">
+                    <div class="message-avatar">
+                        <i data-lucide="bot"></i>
+                    </div>
+                    <div class="message-content">
+                        ¡Hola! Soy tu asistente RAG. Puedo ayudarte a responder preguntas basadas en la información de tus documentos. ¿En qué puedo ayudarte hoy?
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <form id="chat-form" class="input-wrapper">
+                    <textarea 
+                        id="user-input" 
+                        placeholder="Escribe tu pregunta aquí..." 
+                        rows="1"
+                        autocomplete="off"
+                    ></textarea>
+                    <button title="submit" type="submit" id="send-button">
+                        <i data-lucide="send"></i>
+                    </button>
+                </form>
+                <p class="input-hint">Presiona Enter para enviar, Shift + Enter para nueva línea.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

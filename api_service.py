@@ -3,7 +3,7 @@ import requests
 import json
 import chromadb
 import google.generativeai as genai
-from fastapi import FastAPI, Depends, HTTPException, Header, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -29,7 +29,8 @@ chroma = chromadb.PersistentClient(path=DB_PATH)
 collection = chroma.get_or_create_collection("pdf_rag")
 
 # --- Seguridad: API Key compartida con Vercel ---
-# Esta clave debe estar en el .env local y en las variables de entorno de Vercel
+# Esta clave se usa solo en el backend, no se expone en el frontend.
+# En esta versión, el navegador no envía esta clave.
 SHARED_API_KEY = os.getenv("SHARED_API_KEY", "cambiame_por_algo_seguro")
 
 # --- Configuración de Rate Limiting (3 solicitudes por minuto) ---
@@ -49,16 +50,6 @@ app.add_middleware(
 
 class QuestionRequest(BaseModel):
     question: str
-
-# Middleware simple para verificar la API Key
-async def verify_api_key(x_api_key: str = Header(None)):
-    if x_api_key != SHARED_API_KEY:
-        raise HTTPException(
-            status_code=403, 
-            detail="Acceso denegado: API Key inválida o ausente."
-        )
-    return x_api_key
-
 
 
 def embed_text(text, model="nomic-embed-text"):
@@ -94,8 +85,7 @@ def ask_llm(question, context, model="gemini-3.1-flash-lite-preview"):
 @limiter.limit("3/minute")
 async def ask(
     request_data: QuestionRequest, 
-    request: Request, 
-    x_api_key: str = Depends(verify_api_key)
+    request: Request
 ):
     """Endpoint principal consumido por la web app."""
     try:
