@@ -4,6 +4,7 @@ const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 const clearChatBtn = document.getElementById('clear-chat');
 const apiStatus = document.getElementById('api-status');
+const healthLastChecked = document.getElementById('health-last-checked');
 
 // Configuración de la API
 const API_URL = 'https://b07dwngt-8000.use2.devtunnels.ms';
@@ -22,24 +23,35 @@ userInput.addEventListener('keydown', (e) => {
     }
 });
 
+function setLastCheckedTime() {
+    const now = new Date();
+    const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    healthLastChecked.textContent = `Última comprobación: ${formattedTime}`;
+}
+
 // Verificar estado de la API al cargar
 async function checkHealth() {
     try {
         const response = await fetch(`${API_URL}/health`);
+        setLastCheckedTime();
         if (response.ok) {
             apiStatus.textContent = 'En línea';
             apiStatus.parentElement.querySelector('.pulse').style.backgroundColor = '#10b981';
+            apiStatus.parentElement.querySelector('.pulse').style.animation = 'pulse 2s infinite';
         } else {
             throw new Error();
         }
     } catch (err) {
+        setLastCheckedTime();
         apiStatus.textContent = 'Fuera de línea';
-        apiStatus.parentElement.querySelector('.pulse').style.backgroundColor = '#ef4444';
-        apiStatus.parentElement.querySelector('.pulse').style.animation = 'none';
+        const pulse = apiStatus.parentElement.querySelector('.pulse');
+        pulse.style.backgroundColor = '#ef4444';
+        pulse.style.animation = 'none';
     }
 }
 
 checkHealth();
+setInterval(checkHealth, 5 * 60 * 1000);
 
 // Función para agregar mensajes al chat
 function appendMessage(role, content, context = null) {
